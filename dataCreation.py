@@ -15,20 +15,12 @@ from Bio.PDB.MMCIFParser import MMCIFParser
 
 
 # note : 2D3G and 3A9K in the table twice with different ligands
-
-<<<<<<< HEAD
 PDB_names_list = ['1NBF', '1P3Q', '1S1Q', '1UZX', '1WR6', '1WRD', '1XD3', '1YD8', '2AYO', '2C7M', '2D3G', '2DX5',
                   '2FIF', '2G45', '2GMI', '2HD5', '2HTH', '2IBI', '2J7Q', '2OOB', '2QHO', '2WDT', '2WWZ', '2XBB',
                   '3A33', '3A9K', '3BY4', '3C0R', '3CMM', '3I3T','3IFW', '3IHP', '3JSV', '3JVZ', '3K9P', '3KVF',
                   '3KW5', '3LDZ', '3MHS', '3MTN', '3NHE', '3O65',
                   '3OFI', '3OJ3', '3OLM', '3PHW', '3PRM', '3PT2', '3PTF', '3TBL', '3TMP', '3VHT']
-=======
-#'1NBF', '1P3Q', '1S1Q', '1UZX', '1WR6', '1WRD', '1XD3', '1YD8', '2AYO', '2C7M', '2D3G', '2DX5',
-                  # '2FIF', '2G45', '2GMI', '2HD5', '2HTH', '2IBI', '2J7Q', '2OOB', '2QHO', '2WDT', '2WWZ', '2XBB',
-                  # '3A33', '3A9K', '3BY4', '3C0R', '3CMM', '3I3T','3IFW', '3IHP', '3JSV', '3JVZ', '3K9P', '3KVF',
-PDB_names_list = ['3KW5', '3LDZ', '3MHS', '3MTN', '3NHE', '3O65',
 
->>>>>>> 1e59476f3150987a7682c4ea87e3df561bad94d4
 
 pdb1 = PDBList()
 #pdb1.download_pdb_files(pdb_codes=PDB_names_list, overwrite=True,
