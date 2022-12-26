@@ -1,9 +1,6 @@
-import subprocess
-
 import numpy as np
 from Bio.PDB import PDBList
 from Bio.PDB.MMCIFParser import MMCIFParser
-
 
 # def get_alphafold_download_link(uniprot_id):
 #     link_pattern = 'https://alphafold.ebi.ac.uk/files/AF-{}-F1-model_v2.pdb'
@@ -18,11 +15,12 @@ from Bio.PDB.MMCIFParser import MMCIFParser
 
 
 # note : 2D3G and 3A9K in the table twice with different ligands
+
 #'1NBF', '1P3Q', '1S1Q', '1UZX', '1WR6', '1WRD', '1XD3', '1YD8', '2AYO', '2C7M', '2D3G', '2DX5',
                   # '2FIF', '2G45', '2GMI', '2HD5', '2HTH', '2IBI', '2J7Q', '2OOB', '2QHO', '2WDT', '2WWZ', '2XBB',
                   # '3A33', '3A9K', '3BY4', '3C0R', '3CMM', '3I3T','3IFW', '3IHP', '3JSV', '3JVZ', '3K9P', '3KVF',
 PDB_names_list = ['3KW5', '3LDZ', '3MHS', '3MTN', '3NHE', '3O65',
-                  '3OFI', '3OJ3', '3OLM', '3PHW', '3PRM', '3PT2', '3PTF', '3TBL', '3TMP', '3VHT']
+
 
 pdb1 = PDBList()
 #pdb1.download_pdb_files(pdb_codes=PDB_names_list, overwrite=True,
@@ -52,6 +50,8 @@ threeLetterToSingelDict = {'GLY': 'G', 'ALA': 'A', 'VAL': 'V', 'LEU': 'L', 'ILE'
 ubiq_names = ['UBIQ_', 'RS27A_MOUSE', 'UBC_HUMAN', 'RS27A_HUMAN', 'UBB_HUMAN', 'Q5U5U6_HUMAN', 'UBI4P_YEAST',
               'UBC_HUMAN', 'P62988', 'UBB_BOVIN', 'Q24K23_BOVIN']
 
+
+
 spacial_cif = ['C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/3IFW.cif', "C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/3KVF.cif","C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/3KW5.cif"]
 def findUbiqChains(filename):
     """
@@ -67,10 +67,12 @@ def findUbiqChains(filename):
         for word in line:
             for ubiq in ubiq_names:
                 if ubiq in word:
+
                     if filename in spacial_cif:
                         if bool:
                             bool = False
                             continue
+
                     ubiqLine = line
                     found = True
                     break
@@ -93,13 +95,11 @@ def findUbiqChains(filename):
     return chains
 
 
-# def writeHeaderForChain(file1,s)
-
 def atomDist(atom1, atom2):
     """
-    param atom1: atom object
-    param atom2: atom object
-    return: the euclidian distance between the atoms
+    :param atom1: atom object
+    :param atom2: atom object
+    :return: the euclidian distance between the atoms
     """
 
     vector1 = atom1.get_vector()
@@ -118,14 +118,14 @@ def aaOutOfChain(chain):
     amino_acids = chain.get_residues()
     for aa in amino_acids:
         name = str(aa.get_resname())
-        if name in threeLetterToSingelDict.keys():  #amino acid and not other molecule
+        if name in threeLetterToSingelDict.keys():  # amino acid and not other molecule
             my_list.append(aa)
     return my_list
 
 
 def getLabelForAA(aa, ubiq_atoms, threshold):
     """
-    param aa: amino acid object
+    :param aa: amino acid object
     :param ubiq_atoms: the ubiquitin atoms
     :return: 1 if there exists an atom that is within 4 Angstrom to a ubiquitin atom else 0
     """
@@ -179,18 +179,20 @@ def chainPPBSFomrat(file1, chain, ubiq_atoms):
         threshold = 4
         label = str(getLabelForAA(aa, ubiq_atoms, threshold))
         line.append(label)
-        file1.write(" ".join(line)+"\n")
-
+        file1.write(" ".join(line) + "\n")
 
 
 PBBS_file = open('PSSM.txt', 'a')
 structures = [parser.get_structure(PDB_names_list[i],
+
                                    r'C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/{}.cif'.format(
+
                                        PDB_names_list[i])) for i in range(len(PDB_names_list))]
 # structure1 = parser.get_structure('1NBF', r'C:\Users\omriy\WorkshopProteins\final_project\UBIPred\UBDs\1nbf.cif')
 for i in range(len(structures)):
-
     print(structures[i])
     structurePPBSFormat(PBBS_file, structures[i],
+
                             r'C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/{}.cif'.format(PDB_names_list[i]))
 PBBS_file.close()
+
