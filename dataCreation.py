@@ -185,7 +185,7 @@ def chainPPBSFomrat(file1, chain, ubiq_atoms):
 PBBS_file = open('PSSM.txt', 'a')
 structures = [parser.get_structure(PDB_names_list[i],
 
-                                   r'C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/{}.cif'.format(
+                                   r'C:\Users\omriy\WorkshopProteins\UbiqPred\UBDs\{}.cif'.format(
 
                                        PDB_names_list[i])) for i in range(len(PDB_names_list))]
 # structure1 = parser.get_structure('1NBF', r'C:\Users\omriy\WorkshopProteins\final_project\UBIPred\UBDs\1nbf.cif')
@@ -193,6 +193,6 @@ for i in range(len(structures)):
     print(structures[i])
     structurePPBSFormat(PBBS_file, structures[i],
 
-                            r'C:/Users/liory/YearC/workshop_proteins/UbiqPred/pdbs/{}.cif'.format(PDB_names_list[i]))
+                            r'C:\Users\omriy\WorkshopProteins\UbiqPred\UBDs\{}.cif'.format(PDB_names_list[i]))
 PBBS_file.close()
 
