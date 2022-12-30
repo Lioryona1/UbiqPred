@@ -19,49 +19,44 @@ def listCreation(filename):
     return chains_list
 
 
-def make_cath_df(filename):
+def make_cath_df(filename, columns_number):
     """
-    param filename: cath-domain-list file
-    return: dataframe of all the chains in the file and their cath classification divide to 4 different columns
+    :param filename: cath-domain-list file
+    :param columns_number: the number of columns to consider with the cath classification not include the cath domain name
+    :return: dataframe of all the chains in the file and their cath classification divide to 4 different columns
     """
     df = pd.read_fwf(filename, delimiter='', skiprows=17, header=None)
-    df = df.iloc[:, 0:5]
-    df.columns = ['chain', 'n1', 'n2', 'n3', 'n4']
+    df = df.iloc[:, 0:columns_number+1]
+    cath_columns = ["n"+str(i) for i in range(1,columns_number+1)]
+    df.columns = ['chain'] + cath_columns
     df['chain'] = df['chain'].apply(lambda x: x[0:5])
     return df
 
 
-def neighbor_mat(df, lst, homologous=True):
+def neighbor_mat(df, lst, columns_number):
     """
     :param df: cath data frame as it return from the func make_cath_df
     :param lst: list of chains
-    :param homologous: if true, make the matrix base on the homologous match, else, base on topology
-    :return: matrix. mat[i][j] == 1 if there is homologous connection between chain i and chain j
+    :param columns_number: the number of columns to consider with the cath classification not include the cath domain name
+    :return: matrix. mat[i][j] == 1 if there is connection between chain i and chain j
     """
+    cath_columns = ["n" + str(i) for i in range(1, columns_number + 1)]
     n = len(lst)
     mat = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1, n):
-            if homologous:
-                similarity = df[df['chain'].isin([lst[i], lst[j]])].groupby(by=['n1', 'n2', 'n3', 'n4'])
-            else:  # topology
-                similarity = df[df['chain'].isin([lst[i], lst[j]])].groupby(by=['n1', 'n2', 'n3'])
+            similarity = df[df['chain'].isin([lst[i], lst[j]])].groupby(by=cath_columns)
             for name, group in similarity:
-                if group.shape[0] == 2:
+                if len(group['chain'].unique()) == 2:
                     mat[i][j] = mat[j][i] = 1
                     break
     return mat
 
 
-cath_df = make_cath_df("cath-domain-list.txt")
+cath_df = make_cath_df("cath-domain-list.txt",3)
 lst = listCreation("PSSM.txt")
-matTopology = neighbor_mat(cath_df, lst, homologous=False)
-matHomologous = neighbor_mat(cath_df, lst, homologous=True)
-graphTopology = csr_matrix(matTopology)
+matHomologous = neighbor_mat(cath_df, lst,3)
 graphHomologous = csr_matrix(matHomologous)
-topology_components, topologyLabels = connected_components(csgraph=graphTopology, directed=False, return_labels=True)
 homologous_components, homologousLabels = connected_components(csgraph=graphHomologous, directed=False, return_labels=True)
-print(topology_components)
-print(topologyLabels)
 print(homologous_components)
 print(homologousLabels)
