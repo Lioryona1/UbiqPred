@@ -25,7 +25,7 @@ def make_cath_df(filename, columns_number):
     :param columns_number: the number of columns to consider with the cath classification not include the cath domain name
     :return: dataframe of all the chains in the file and their cath classification divide to 4 different columns
     """
-    df = pd.read_fwf(filename, delimiter='', skiprows=17, header=None)
+    df = pd.read_csv(filename, skiprows = 16, header=None, delimiter=r"\s+")
     df = df.iloc[:, 0:columns_number+1]
     cath_columns = ["n"+str(i) for i in range(1,columns_number+1)]
     df.columns = ['chain'] + cath_columns
