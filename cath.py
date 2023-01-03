@@ -215,3 +215,5 @@ chainDict = chainListsToChainIndexDict(chainLists)
 print(chainLists)
 print(chainDict)
 dividePSSM(chainDict)
+
+
