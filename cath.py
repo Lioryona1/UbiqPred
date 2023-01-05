@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
+from Bio import pairwise2
 
 def listCreation(filename):
     """
@@ -40,23 +41,45 @@ def neighbor_mat(df, lst, columns_number):
     :param columns_number: the number of columns to consider with the cath classification not include the cath domain name
     :return: matrix. mat[i][j] == 1 if there is connection between chain i and chain j
     """
+    # generate the graph using CATH.
     cath_columns = ["n" + str(i) for i in range(1, columns_number + 1)]
+    not_in_cath = set()
     n = len(lst)
     mat = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1, n):
-            similarity = df[df['chain'].isin([lst[i], lst[j]])].groupby(by=cath_columns)
+            similarity = df[df['chain'].isin([lst[i], lst[j]])]
+            if len(similarity['chain'].unique()) == 1:
+                if(similarity['chain'].unique()[0]==lst[i]):
+                    not_in_cath.add(lst[j])
+                else:
+                    not_in_cath.add(lst[i])
+                break
+            similarity = similarity.groupby(by=cath_columns)
             for name, group in similarity:
                 if len(group['chain'].unique()) == 2:
                     mat[i][j] = mat[j][i] = 1
                     break
+    # calculate the sequence identity
+    for i in range(n):
+        for j in range(i+1, n):
+            if (lst[i] in not_in_cath):
+                alignment = pairwise2.align.globalxx(lst[i], lst[j], one_alignment_only = True)
+                #score = alignment[2]/alignment[4]
+                print(alignment)
+
+    print(not_in_cath)
     return mat
 
 
-cath_df = make_cath_df("cath-domain-list.txt",3)
+cath_df = make_cath_df("cath-domain-list.txt",6)
 lst = listCreation("PSSM.txt")
-matHomologous = neighbor_mat(cath_df, lst,3)
+matHomologous = neighbor_mat(cath_df, lst,6)
 graphHomologous = csr_matrix(matHomologous)
 homologous_components, homologousLabels = connected_components(csgraph=graphHomologous, directed=False, return_labels=True)
-print(homologous_components)
-print(homologousLabels)
+print(lst)
+# print(homologous_components)
+# print(homologousLabels)
+
+#manually df
+#cath_df = pd.concat([pd.DataFrame(['1p3qR',1,10,8,10,14,1], columns=cath_df.columns), cath_df], ignore_index=True)
