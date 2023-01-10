@@ -93,14 +93,14 @@ def neighbor_mat(df, nameList, seqList, columns_number):
 
 cath_df = make_cath_df("cath-domain-list.txt",4)
 nameList, sizeList, seqList = listCreation("PSSM.txt")
-matHomologous = neighbor_mat(cath_df, nameList, seqList,4)
-graphHomologous = csr_matrix(matHomologous)
-homologous_components, homologousLabels = connected_components(csgraph=graphHomologous, directed=False, return_labels=True)
+# matHomologous = neighbor_mat(cath_df, nameList, seqList,4)
+# graphHomologous = csr_matrix(matHomologous)
+# homologous_components, homologousLabels = connected_components(csgraph=graphHomologous, directed=False, return_labels=True)
 print(nameList)
-print(nameList[40], nameList[44])
-print(nameList[83:90])
-print(homologous_components)
-print(homologousLabels)
+# print(nameList[40], nameList[44])
+# print(nameList[83:90])
+# print(homologous_components)
+# print(homologousLabels)
 
 
 def createRelatedChainslist(numberOfComponents, labels):
