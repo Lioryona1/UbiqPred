@@ -1,6 +1,6 @@
 # UbiqPred
 Our project goal was to develop a model that finds Ubiquitin binding domain (UBDs).
-We refined a an end-to-end, interpretable geometric deep learning model called ScanNet https://github.com/jertubiana/ScanNet
+We refined an end-to-end, interpretable geometric deep learning model called ScanNet, you can see it here: https://github.com/jertubiana/ScanNet
 
 In this repository there are a couple of modules:
 
