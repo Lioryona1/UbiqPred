@@ -90,6 +90,7 @@ def neighbor_mat(df, nameList, seqList, columns_number):
     return mat
 
 
+
 def createRelatedChainslist(numberOfComponents, labels):
     """
     :param numberOfComponents: number of component = x => 0<=label values<x
