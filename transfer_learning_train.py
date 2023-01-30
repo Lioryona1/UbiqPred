@@ -6,6 +6,7 @@ import pandas as pd
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from keras.optimizers import Adam
 
+import histogram
 import preprocessing.pipelines as pipelines
 import utilities.dataset_utils as dataset_utils
 import utilities.paths as paths
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     Five-fold cross-validation is used, i.e. five models are trained.
     '''
     check = False  # Check = True to verify installation, =False for full training.
-    train = True  # True to retrain, False to evaluate the model shown in paper.
+    train = False  # True to retrain, False to evaluate the model shown in paper.
     transfer = True  # If False, retrain from scratch.
     freeze = False  # If True, evaluate the binding site network without fine tuning.
     use_evolutionary = False  # True to use evolutionary information (requires hhblits and a sequence database), False otherwise.
@@ -122,10 +123,10 @@ if __name__ == '__main__':
         )
 
         # weights = np.array(dataset_table['Sample weight'][ dataset_table['Set'] == dataset_name ] )
-        weights = np.ones(len(inputs))
-        if check:
-            weights = weights[:10]
-        weights = np.array([weights[b] for b in range(len(weights)) if not b in failed_samples])
+        weights = np.ones(len(inputs[0]))
+        # if check:
+        #     weights = weights[:10]
+        # weights = np.array([weights[b] for b in range(len(weights)) if not b in failed_samples])
 
         print("len(inputs) = ", len(inputs))
 
@@ -153,6 +154,7 @@ if __name__ == '__main__':
     '''
 
     all_cross_predictions = []
+    all_cross_test_label = []
 
     for k in range(5):  # 5-fold training/evaluation.
         not_k = [i for i in range(5) if i != k]
@@ -201,8 +203,22 @@ if __name__ == '__main__':
             # Only return the binding site probability p. return_all=True gives [1-p,p] for each residue.
             batch_size=1)
         all_cross_predictions.append(test_predictions)
+        all_cross_test_label.append(test_outputs)
 
     all_cross_predictions = np.concatenate(all_cross_predictions)
+    all_cross_test_label = np.concatenate(all_cross_test_label)
+
+    all_predictions_as_one_list = np.concatenate(all_cross_predictions)
+    label0_list, label1_list = histogram.create_label_lists(all_cross_test_label, all_cross_predictions)
+    histogram.create_labels_histogram(label0_list, label1_list)
+    threshold33 = histogram.find_threshold(0.333, label0_list, label1_list,all_predictions_as_one_list)
+    threshold50 = histogram.find_threshold(0.5, label0_list, label1_list,all_predictions_as_one_list)
+    threshold25 = histogram.find_threshold(0.25, label0_list, label1_list,all_predictions_as_one_list)
+    print(threshold33)
+    print(threshold50)
+    print(threshold25)
+
+
     all_labels = np.concatenate([np.array([
         np.argmax(label, axis=1)[:Lmax_aa]  # Back to 0-1 labels from one-hot encoding.
         for label in list_outputs[i]]) for i in range(5)])
